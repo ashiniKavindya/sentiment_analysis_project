@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VibeCheck</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../static/products/background.jpg");
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.8s ease-in-out;
+}
+
+/* Glass container */
+.container {
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 24px;
+    padding: 34px;
+    width: 390px;
+    text-align: center;
+    box-shadow: 0 35px 70px rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Title */
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #ffffff, #cfd9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+/* Tagline */
+.tagline {
+    font-size: 14px;
+    color: #f1f1f1;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+}
+
+/* Textarea */
+textarea {
+    margin: 10px;
+    width: 80%;
+    height: 95px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    resize: none;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Button */
+button {
+    margin-top: 18px;
+    padding: 12px 32px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+button:hover {
+    transform: scale(1.07);
+    box-shadow: 0 12px 25px rgba(118,75,162,0.6);
+}
+
+/* Result section */
+.result {
+    margin-top: 26px;
+    display: none;
+}
+
+.emoji {
+    font-size: 64px;
+    margin-bottom: 6px;
+    animation: float 2s infinite ease-in-out;
+}
+
+.result h2 {
+    font-size: 26px;
+    font-weight: 500;
+    background: linear-gradient(90deg, #ffe259, #ffa751);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+.result p {
+    font-size: 14px;
+    color: #f3f3f3;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+</style>
+</head>
+
+<body id="body">
+
+<div class="container">
+    <h1>VibeCheck</h1>
+    <div class="tagline">Drop a thought. Catch the vibe.</div>
+
+    <form method="post">
+        <textarea name="text" id="textInput" placeholder="Type how you feel..."></textarea>
+        <button type="submit">Check My Vibe</button>
+    </form>
+    
+
+    <div class="result" id="result">
+        <div class="emoji" id="emoji">😊</div>
+        <h2 id="feeling">Positive Vibe</h2>
+        <p id="message">Your words carry a positive feeling ✨</p>
+        <p id="checkedText" style="margin-top:12px;color:#fff;font-size:14px;"></p>
+        <a href="/" id="newVibeBtn" style="display:inline-block;margin-top:12px;padding:10px 20px;border-radius:20px;background:#764ba2;color:#fff;text-decoration:none;">Check a new vibe</a>
+    </div>
+</div>
+
+<script>
+const data = {{ data | tojson | safe }};
+
+function checkVibe() {
+        const body = document.getElementById("body");
+        const result = document.getElementById("result");
+        const emoji = document.getElementById("emoji");
+        const feeling = document.getElementById("feeling");
+        const message = document.getElementById("message");
+
+        if (!data || data.reviews === 'nothing') {
+            result.style.display = "none";
+            return;
+        }
+
+        // hide form after submit
+        const form = document.querySelector('form');
+        if (form) form.style.display = 'none';
+
+        result.style.display = "block";
+
+        if (data.reviews === 'positive') {
+                body.style.backgroundImage =
+                    "url('../static/products/happy.jpg')";
+                emoji.textContent = "😊";
+                feeling.textContent = "Positive Vibe";
+                message.textContent = "Your words carry a positive feeling ✨";
+        } else {
+                body.style.backgroundImage =
+                    "url('../static/products/sad.jpg')";
+                emoji.textContent = "😐";
+                feeling.textContent = "Not Positive Vibe";
+                message.textContent = "That message doesn’t feel positive.";
+        }
+
+        // show submitted text
+        const checked = document.getElementById('checkedText');
+        if (checked) checked.textContent = `Checked: ${data.input || ''}`;
+}
+
+window.addEventListener('DOMContentLoaded', checkVibe);
+</script>
+
+</body>
+</html>
